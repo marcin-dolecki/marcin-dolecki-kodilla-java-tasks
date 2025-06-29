@@ -21,8 +21,8 @@ public class TaskController {
         return new TaskDto(1L, "test title", "test content");
     }
 
-    @DeleteMapping("/{taskId}")
-    public void deleteTask(@PathVariable Long taskId) {
+    @DeleteMapping
+    public void deleteTask(Long taskId) {
 
     }
 
