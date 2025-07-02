@@ -27,10 +27,11 @@ public class TaskController {
         return taskMapper.mapToTaskDtoList(tasks);
     }
 
+//    @GetMapping(value = "{taskId}", produces = MediaType.APPLICATION_JSON_VALUE) --> alternative when we want to specify which response data type is accepted
     @GetMapping("/{taskId}")
-    public TaskDto getTask(@PathVariable Long taskId) throws Exception {
+    public TaskDto getTask(@PathVariable Long taskId) throws TaskNotFoundException {
         return taskMapper.mapToTaskDto(
-                service.getTask(taskId).orElseThrow(Exception::new)
+                service.getTask(taskId).orElseThrow(TaskNotFoundException::new)
         );
     }
 
