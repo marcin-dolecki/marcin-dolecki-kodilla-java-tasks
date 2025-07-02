@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.context.annotation.EnableMBeanExport;
 
 @NoArgsConstructor
@@ -17,6 +18,7 @@ public class Task {
 
     @Id
     @GeneratedValue
+    @Column(unique = true)
     private Long id;
 
     @Column(name = "name")
