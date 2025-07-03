@@ -24,36 +24,31 @@ public class TaskController {
 
 //    @RequestMapping(method = RequestMethod.GET, value = "") --> alternative approach
     @GetMapping
-    public List<TaskDto> getTasks() {
+    public ResponseEntity<List<TaskDto>> getTasks() {
         List<Task> tasks = service.getAllTasks();
-        return taskMapper.mapToTaskDtoList(tasks);
+        return ResponseEntity.ok(taskMapper.mapToTaskDtoList(tasks));
     }
 
 //    @GetMapping(value = "{taskId}", produces = MediaType.APPLICATION_JSON_VALUE) --> alternative when we want to specify which response data type is accepted
     @GetMapping("/{taskId}")
-    public ResponseEntity <TaskDto> getTask(@PathVariable Long taskId) throws TaskNotFoundException {
-        try {
-            return new ResponseEntity<>(taskMapper.mapToTaskDto(service.getTask(taskId)), HttpStatus.OK);
-        } catch (TaskNotFoundException e) {
-            return new ResponseEntity<>(
-                    new TaskDto(0L, "There is no task with id equals to " + taskId, ""), HttpStatus.BAD_REQUEST
-            );
-        }
+    public ResponseEntity<TaskDto> getTask(@PathVariable Long taskId) throws TaskNotFoundException {
+        return ResponseEntity.ok(taskMapper.mapToTaskDto(service.getTask(taskId)));
     }
 
-    @DeleteMapping
-    public void deleteTask(Long taskId) {
-
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping
-    public TaskDto updateTask(TaskDto taskDto) {
-        return new TaskDto(1L, "Edited test title", "Edited test content");
+    public ResponseEntity<TaskDto> updateTask(@RequestBody TaskDto taskDto) {
+        return ResponseEntity.ok(new TaskDto(1L, "Edited test title", "Edited test content"));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createTask(@RequestBody TaskDto taskDto) {
+    public ResponseEntity<Void> createTask(@RequestBody TaskDto taskDto) {
         Task task = taskMapper.mapToTask(taskDto);
         service.saveTask(task);
+        return ResponseEntity.ok().build();
     }
 }
