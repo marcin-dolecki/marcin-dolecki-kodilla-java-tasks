@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,13 +43,31 @@ public class TaskController {
 
     @PutMapping
     public ResponseEntity<TaskDto> updateTask(@RequestBody TaskDto taskDto) {
-        return ResponseEntity.ok(new TaskDto(1L, "Edited test title", "Edited test content"));
+        Task task = taskMapper.mapToTask(taskDto);
+        Task savedTask = service.saveTask(task);
+        return ResponseEntity.ok(taskMapper.mapToTaskDto(savedTask));
     }
 
+//    Alternative dla PUT --> based on GTP is more REST
+//    @PutMapping("/{id}")
+//    public ResponseEntity<TaskDto> updateTask(@PathVariable Long id, @RequestBody TaskDto taskDto) {
+//        Task updated = service.updateTask(id, taskDto);
+//        return ResponseEntity.ok(taskMapper.mapToTaskDto(updated));
+//    }
+
+//    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Void> createTask(@RequestBody TaskDto taskDto) {
+//        Task task = taskMapper.mapToTask(taskDto);
+//        service.saveTask(task);
+//        return ResponseEntity.ok().build();
+//    }
+
+//    Alternative for POST --> based on GTP it is better
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createTask(@RequestBody TaskDto taskDto) {
+    public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto taskDto) {
         Task task = taskMapper.mapToTask(taskDto);
-        service.saveTask(task);
-        return ResponseEntity.ok().build();
+        Task savedTask = service.saveTask(task);
+        URI location = URI.create("/v1/tasks/" + savedTask.getId());
+        return ResponseEntity.created(location).body(taskMapper.mapToTaskDto(savedTask));
     }
 }
