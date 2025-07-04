@@ -49,11 +49,15 @@ public class TaskController {
     }
 
 //    Alternative dla PUT --> based on GTP is more REST
-//    @PutMapping("/{id}")
-//    public ResponseEntity<TaskDto> updateTask(@PathVariable Long id, @RequestBody TaskDto taskDto) {
-//        Task updated = service.updateTask(id, taskDto);
-//        return ResponseEntity.ok(taskMapper.mapToTaskDto(updated));
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskDto> updateTask(
+            @PathVariable Long id,
+            @RequestBody TaskDto taskDto
+    ) throws TaskNotFoundException {
+        Task taskData = taskMapper.mapToTask(taskDto);
+        Task updatedTask = service.updateTask(id, taskData);
+        return ResponseEntity.ok(taskMapper.mapToTaskDto(updatedTask));
+    }
 
 //    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<Void> createTask(@RequestBody TaskDto taskDto) {

@@ -23,6 +23,16 @@ public class DbService {
         return repository.findById(id).orElseThrow(TaskNotFoundException::new);
     }
 
+    public Task updateTask(final Long id, Task taskData) throws TaskNotFoundException {
+        Task existingTask = repository.findById(id).orElseThrow(TaskNotFoundException::new);
+        Task newTask = new Task(
+                existingTask.getId(),
+                taskData.getTitle(),
+                taskData.getContent()
+        );
+        return repository.save(newTask);
+    }
+
     public Task saveTask(final Task task) {
         return repository.save(task);
     }
