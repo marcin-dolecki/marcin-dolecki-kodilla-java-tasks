@@ -43,3 +43,20 @@ Zwracane są odpowiednie kody HTTP, np. `200 OK`, `201 Created`, `204 No Content
 - Obsługa błędów realizowana jest globalnie przez klasę `GlobalHttpErrorHandler`, która przechwytuje wyjątek `TaskNotFoundException`.
 - Obiekty DTO (`TaskDto`) są mapowane na encje (`Task`) za pomocą klasy `TaskMapper`.
 - Aplikacja została napisana w języku **Java**, w oparciu o konwencje warstw: kontroler, serwis, repozytorium.
+
+---
+
+### 🖥️ Testowy serwer Apache (frontend lokalnie)
+
+- Do uruchomienia frontendowej części aplikacji lokalnie wykorzystano serwer Apache dostępny w systemie Ubuntu.
+- Pliki frontendowe (HTML, CSS, JS) umieszczane są w katalogu:  
+  `/var/www/html/tasks_frontend`
+- Po skopiowaniu plików, frontend jest dostępny pod adresem:  
+  `http://localhost/tasks_frontend`
+- W razie aktualizacji repozytorium, pliki można ponownie skopiować poleceniem:
+  ```bash
+  sudo cp -r /home/marcind/workspace/tasks/src/main/resources/static/index.html /var/www/html/tasks_frontend/
+  sudo cp -r /home/marcind/workspace/tasks/src/main/resources/static/style.css /var/www/html/tasks_frontend/
+  sudo cp -r /home/marcind/workspace/tasks/src/main/resources/static/script.js /var/www/html/tasks_frontend/
+
+- Serwer Apache nie wymaga restartu po zmianie lub dodaniu plików statycznych (np. .html, .js, .css).
