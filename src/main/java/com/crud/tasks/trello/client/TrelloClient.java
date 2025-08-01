@@ -1,6 +1,8 @@
 package com.crud.tasks.trello.client;
 
+import com.crud.tasks.domain.CreatedTrelloCard;
 import com.crud.tasks.domain.TrelloBoardDto;
+import com.crud.tasks.domain.TrelloCardDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +27,6 @@ public class TrelloClient {
     private String trelloUsername;
 
     public List<TrelloBoardDto> getTrelloBoards() {
-
         URI url = buildTrelloBoardsUrl();
 
         TrelloBoardDto[] boardsResponse = restTemplate.getForObject(url, TrelloBoardDto[].class);
@@ -33,6 +34,12 @@ public class TrelloClient {
         return Optional.ofNullable(boardsResponse)
                 .map(Arrays::asList)
                 .orElse(Collections.emptyList());
+    }
+
+    public CreatedTrelloCard createNewCard(TrelloCardDto trelloCardDto) {
+        URI url = buildTrelloCardUrl(trelloCardDto);
+
+        return restTemplate.postForObject(url, null, CreatedTrelloCard.class);
     }
 
     private URI buildTrelloBoardsUrl() {
@@ -46,6 +53,24 @@ public class TrelloClient {
                 .queryParam("token", trelloToken)
                 .queryParam("fields", "name, id")
                 .queryParam("lists", "all")
+                .build()
+                .encode()
+                .toUri();
+    }
+
+    private URI buildTrelloCardUrl(TrelloCardDto trelloCardDto) {
+        URI baseUri = URI.create(trelloApiEndpoint);
+
+        return UriComponentsBuilder.newInstance()
+                .scheme(baseUri.getScheme())
+                .host(baseUri.getHost())
+                .path(baseUri.getPath() + "/cards")
+                .queryParam("key", trelloAppKey)
+                .queryParam("token", trelloToken)
+                .queryParam("name", trelloCardDto.getName())
+                .queryParam("desc", trelloCardDto.getDescription())
+                .queryParam("pos", trelloCardDto.getPos())
+                .queryParam("idList", trelloCardDto.getListId())
                 .build()
                 .encode()
                 .toUri();
