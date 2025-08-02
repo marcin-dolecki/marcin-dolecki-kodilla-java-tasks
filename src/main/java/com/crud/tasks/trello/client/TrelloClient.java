@@ -3,6 +3,7 @@ package com.crud.tasks.trello.client;
 import com.crud.tasks.domain.CreatedTrelloCard;
 import com.crud.tasks.domain.TrelloBoardDto;
 import com.crud.tasks.domain.TrelloCardDto;
+import com.crud.tasks.trello.config.TrelloConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,16 +21,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TrelloClient {
     private final RestTemplate restTemplate;
+    private final TrelloConfig trelloConfig;
     private static final Logger LOGGER = LoggerFactory.getLogger(TrelloClient.class);
-
-    @Value("${trello.api.endpoint.prod}")
-    private String trelloApiEndpoint;
-    @Value("${trello.app.key}")
-    private String trelloAppKey;
-    @Value("${trello.app.token}")
-    private String trelloToken;
-    @Value("${trello.username}")
-    private String trelloUsername;
 
     public List<TrelloBoardDto> getTrelloBoards() {
         URI url = buildTrelloBoardsUrl();
@@ -57,14 +50,14 @@ public class TrelloClient {
     }
 
     private URI buildTrelloBoardsUrl() {
-        URI baseUri = URI.create(trelloApiEndpoint);
+        URI baseUri = URI.create(trelloConfig.getTrelloApiEndpoint());
 
         return UriComponentsBuilder.newInstance()
                 .scheme(baseUri.getScheme())
                 .host(baseUri.getHost())
-                .path(baseUri.getPath() + "/members/" + trelloUsername + "/boards")
-                .queryParam("key", trelloAppKey)
-                .queryParam("token", trelloToken)
+                .path(baseUri.getPath() + "/members/" + trelloConfig.getTrelloUsername() + "/boards")
+                .queryParam("key", trelloConfig.getTrelloAppKey())
+                .queryParam("token", trelloConfig.getTrelloToken())
                 .queryParam("fields", "name, id")
                 .queryParam("lists", "all")
                 .build()
@@ -73,14 +66,14 @@ public class TrelloClient {
     }
 
     private URI buildTrelloCardUrl(TrelloCardDto trelloCardDto) {
-        URI baseUri = URI.create(trelloApiEndpoint);
+        URI baseUri = URI.create(trelloConfig.getTrelloApiEndpoint());
 
         return UriComponentsBuilder.newInstance()
                 .scheme(baseUri.getScheme())
                 .host(baseUri.getHost())
                 .path(baseUri.getPath() + "/cards")
-                .queryParam("key", trelloAppKey)
-                .queryParam("token", trelloToken)
+                .queryParam("key", trelloConfig.getTrelloAppKey())
+                .queryParam("token", trelloConfig.getTrelloToken())
                 .queryParam("name", trelloCardDto.getName())
                 .queryParam("desc", trelloCardDto.getDescription())
                 .queryParam("pos", trelloCardDto.getPos())
