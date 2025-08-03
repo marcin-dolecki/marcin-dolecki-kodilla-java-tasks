@@ -14,6 +14,8 @@ import java.util.List;
 @Getter*/
 // we can replace above annotations by @Data
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrelloBoardDto {
 
