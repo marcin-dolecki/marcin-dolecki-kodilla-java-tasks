@@ -1,5 +1,6 @@
 package com.crud.tasks.service;
 
+import com.crud.tasks.domain.Mail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
@@ -14,12 +15,10 @@ public class SimpleEmailService {
 
     private final JavaMailSender javaMailSender;
 
-    public void send(final String receiverEmail, final String subject, final String message) {
-
+    public void send(final Mail mail) {
         log.info("Starting email preparation...");
-
         try {
-            SimpleMailMessage mailMessage = createMailMessage(receiverEmail, subject, message);
+            SimpleMailMessage mailMessage = createMailMessage(mail);
             javaMailSender.send(mailMessage);
             log.info("Email has been sent.");
         } catch (MailException e) {
@@ -27,11 +26,11 @@ public class SimpleEmailService {
         }
     }
 
-    private SimpleMailMessage createMailMessage(final String receiverEmail, final String subject, final String message) {
+    private SimpleMailMessage createMailMessage(final Mail mail) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(receiverEmail);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
+        mailMessage.setTo(mail.getMailTo());
+        mailMessage.setSubject(mail.getSubject());
+        mailMessage.setText(mail.getMessage());
         return mailMessage;
     }
 }
