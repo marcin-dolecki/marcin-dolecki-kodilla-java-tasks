@@ -1,5 +1,3 @@
-// $(document).ready(function() {const apiRoot = 'https://marcin-dolecki-kodilla-java-tasks.onrender.com/v1/tasks';
-//     const trelloApiRoot = 'https://marcin-dolecki-kodilla-java-tasks.onrender.com/v1/trello';
 $(document).ready(function() {const apiRoot = 'http://localhost:8080/v1/tasks';
     const trelloApiRoot = 'http://localhost:8080/v1/trello';
     const datatableRowTemplate = $('[data-datatable-row-template]').children()[0];
@@ -34,44 +32,16 @@ $(document).ready(function() {const apiRoot = 'http://localhost:8080/v1/tasks';
                 .val(choice.id)
                 .text(choice.name || 'Unknown name');
         });
-    }
-    // function handleDatatableRender(taskData, boards) {
-    //     $tasksContainer.empty();
-    //     boards.forEach(board => {
-    //         availableBoards[board.id] = board;
-    //     });
-    //     taskData.forEach(function(task) {
-    //         var $datatableRowEl = createElement(task);
-    //         var $availableBoardsOptionElements = prepareBoardOrListSelectOptions(boards);
-    //         $datatableRowEl.find('[data-board-name-select]').append($availableBoardsOptionElements);
-    //         $datatableRowEl.appendTo($tasksContainer);
-    //     });
-    //     // console.log('Boards:', boards);
-    //     // console.log('AvailableBoards:', availableBoards);
-    // }
-    function handleDatatableRender(taskData, boards) {
+    }function handleDatatableRender(taskData, boards) {
         $tasksContainer.empty();
-
-        // Zachowujemy boards w mapie
         boards.forEach(board => {
             availableBoards[board.id] = board;
         });
-
-        taskData.forEach(task => {
-            // Klonujemy template
-            const $row = $(datatableRowTemplate).clone(true, true).show();
-            $row.attr('data-task-id', task.id);
-
-            $row.find('[data-task-name-input]').val(task.title);
-            $row.find('[data-task-content-input]').val(task.content);
-
-            // Wypełniamy select boardami
-            const $boardSelect = $row.find('[data-board-name-select]');
-            boards.forEach(board => {
-                $boardSelect.append($('<option>').val(board.id).text(board.name));
-            });
-
-            $tasksContainer.append($row);
+        taskData.forEach(function(task) {
+            var $datatableRowEl = createElement(task);
+            var $availableBoardsOptionElements = prepareBoardOrListSelectOptions(boards);
+            $datatableRowEl.find('[data-board-name-select]').append($availableBoardsOptionElements);
+            $datatableRowEl.appendTo($tasksContainer);
         });
     }
     function getAllTasks() {
@@ -153,27 +123,12 @@ $(document).ready(function() {const apiRoot = 'http://localhost:8080/v1/tasks';
         parentEl.find('[data-task-name-input]').val(taskTitle);
         parentEl.find('[data-task-content-input]').val(taskContent);
     }
-    // function handleBoardNameSelect(event) {
-    //     var $changedSelectEl = $(event.target);
-    //     var selectedBoardId = $changedSelectEl.val();
-    //     var $listNameSelectEl = $changedSelectEl.siblings('[data-list-name-select]');
-    //     var preparedListOptions = prepareBoardOrListSelectOptions(availableBoards[selectedBoardId].lists);
-    //     $listNameSelectEl.empty().append(preparedListOptions);
-    // }
     function handleBoardNameSelect(event) {
-        const $boardSelect = $(event.target);
-        const selectedBoardId = $boardSelect.val();
-        const $listSelect = $boardSelect.siblings('[data-list-name-select]');
-
-        // Czyścimy wcześniejsze opcje
-        $listSelect.empty();
-        $listSelect.append('<option disabled selected>--- select a list ---</option>');
-
-        if (availableBoards[selectedBoardId] && availableBoards[selectedBoardId].lists) {
-            availableBoards[selectedBoardId].lists.forEach(list => {
-                $listSelect.append($('<option>').val(list.id).text(list.name));
-            });
-        }
+        var $changedSelectEl = $(event.target);
+        var selectedBoardId = $changedSelectEl.val();
+        var $listNameSelectEl = $changedSelectEl.siblings('[data-list-name-select]');
+        var preparedListOptions = prepareBoardOrListSelectOptions(availableBoards[selectedBoardId].lists);
+        $listNameSelectEl.empty().append(preparedListOptions);
     }
     function handleCardCreationRequest(event) {
         var requestUrl = trelloApiRoot + '/cards';
