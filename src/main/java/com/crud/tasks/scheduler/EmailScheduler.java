@@ -17,8 +17,8 @@ public class EmailScheduler {
     private final AdminConfig adminConfig;
     private static final String SUBJECT = "Tasks: Once a day email";
 
-    @Scheduled(cron = "0 0 10 * * *") // every day at 10
-//    @Scheduled(fixedDelay = 10000) // every 10 seconds
+//    @Scheduled(cron = "0 0 10 * * *") // every day at 10
+    @Scheduled(fixedDelay = 10000) // every 10 seconds
     public void sendInformationEmail() {
 
         long size = taskRepository.count();
