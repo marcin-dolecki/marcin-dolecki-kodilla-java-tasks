@@ -15,7 +15,11 @@ public class SimpleEmailServiceRealTest {
     public void shouldSendEmail() {
         // Given
         String mailTo = "test@gmail.com";
-        Mail mail = new Mail(mailTo, "test", "test message");
+        Mail mail = Mail.builder()
+                .mailTo(mailTo)
+                .subject("test")
+                .message("test message")
+                .build();
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(mail.getMailTo());
