@@ -12,11 +12,14 @@ import static java.util.stream.Collectors.toList;
 
 @Component
 public class TrelloMapper {
-    public TrelloBoard mapToTrelloBoard(final TrelloBoardDto trelloBoardDto) {
-        return new TrelloBoard(trelloBoardDto.getId(), trelloBoardDto.getName(), mapToList(trelloBoardDto.getLists()));
+
+    public List<TrelloBoard> mapToTrelloBoards(final List<TrelloBoardDto> trelloBoardDto) {
+        return trelloBoardDto.stream()
+                .map(trelloBoard -> new TrelloBoard(trelloBoard.getId(), trelloBoard.getName(), mapToTrelloList(trelloBoard.getLists())))
+                .collect(toList());
     }
 
-    private List<TrelloList> mapToList(final List<TrelloListDto> trelloListDto) {
+    private List<TrelloList> mapToTrelloList(final List<TrelloListDto> trelloListDto) {
         return trelloListDto.stream()
                 .map(trelloList -> new TrelloList(trelloList.getId(), trelloList.getName(), trelloList.isClosed()))
                 .collect(toList());
