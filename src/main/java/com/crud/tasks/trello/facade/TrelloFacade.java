@@ -1,7 +1,6 @@
 package com.crud.tasks.trello.facade;
 
 import com.crud.tasks.domain.TrelloBoard;
-import com.crud.tasks.domain.TrelloBoardDto;
 import com.crud.tasks.mapper.TrelloMapper;
 import com.crud.tasks.service.TrelloService;
 import lombok.RequiredArgsConstructor;
