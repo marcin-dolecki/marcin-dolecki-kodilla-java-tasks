@@ -3,6 +3,7 @@ package com.crud.tasks.trello.facade;
 import com.crud.tasks.domain.*;
 import com.crud.tasks.mapper.TrelloMapper;
 import com.crud.tasks.service.TrelloService;
+import com.crud.tasks.trello.validator.TrelloValidator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,25 +20,17 @@ public class TrelloFacade {
     private static final Logger LOGGER = LoggerFactory.getLogger(TrelloFacade.class);
     private final TrelloService trelloService;
     private final TrelloMapper trelloMapper;
+    private final TrelloValidator trelloValidator;
 
     public List<TrelloBoardDto> fetchTrelloBoards() {
         List<TrelloBoard> trelloBoards = trelloMapper.mapToTrelloBoards(trelloService.fetchTrelloBoards());
-        LOGGER.info("Current list size: {}. Starting filtering boards...", trelloBoards.size());
-        List<TrelloBoard> filteredBoards = trelloBoards.stream()
-                .filter(trelloBoard -> !trelloBoard.getName().equalsIgnoreCase("test"))
-                .toList();
-        LOGGER.info("Boards have been filtered. Current list size: {}.", filteredBoards.size());
+        List<TrelloBoard> filteredBoards = trelloValidator.validateTrelloBoards(trelloBoards);
         return trelloMapper.mapToTrelloBoardsDto(filteredBoards);
     }
 
     public CreatedTrelloCardDto createCard(final TrelloCardDto trelloCardDto) {
         TrelloCard trelloCard = trelloMapper.mapToTrelloCard(trelloCardDto);
-
-        if (trelloCard.getName().contains("test")) {
-            LOGGER.info("Someone is testing my application!");
-        } else {
-            LOGGER.info("Seems that my application is used in proper way.");
-        }
+        trelloValidator.validateCard(trelloCard);
         return trelloService.createTrelloCard(trelloMapper.mapToTrelloCardDto(trelloCard));
     }
 }
