@@ -15,6 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +44,15 @@ public class TrelloFacadeTest {
         List<TrelloBoard> mappedTrelloBoard = List.of(new TrelloBoard("1", "test", mappedTrelloList));
 
         when(trelloService.fetchTrelloBoards()).thenReturn(trelloBoards);
+        when(trelloMapper.mapToTrelloBoards(trelloBoards)).thenReturn(mappedTrelloBoard);
+        when(trelloMapper.mapToTrelloBoardsDto(anyList())).thenReturn(List.of());
+        when(trelloValidator.validateTrelloBoards(mappedTrelloBoard)).thenReturn(List.of());
 
+        //When
+        List<TrelloBoardDto> trelloBoardDtos = trelloFacade.fetchTrelloBoards();
+
+        //Then
+        assertNotNull(trelloBoardDtos);
+        assertEquals(0, trelloBoardDtos.size());
     }
 }
