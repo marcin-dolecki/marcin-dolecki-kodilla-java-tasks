@@ -17,10 +17,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -98,5 +98,57 @@ class TaskControllerTest {
 
         mockMvc.perform(delete("/v1/tasks/1"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldUpdateTask() throws Exception {
+        TaskDto inputDto = new TaskDto(1L, "Updated", "new content");
+        Task mappedTask = new Task(1L, "Updated", "new content");
+        Task updatedTask = new Task(1L, "Updated", "new content");
+        TaskDto outputDto = new TaskDto(1L, "Updated", "new content");
+
+        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(mappedTask);
+        when(dbService.saveTask(any(Task.class))).thenReturn(updatedTask);
+        when(taskMapper.mapToTaskDto(any(Task.class))).thenReturn(outputDto);
+
+        mockMvc.perform(put("/v1/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(inputDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Updated"));
+    }
+
+    @Test
+    void shouldUpdateTaskWithId() throws Exception {
+        TaskDto inputDto = new TaskDto(1L, "Updated", "new content");
+        Task mappedTask = new Task(1L, "Updated", "new content");
+        Task updatedTask = new Task(1L, "Updated", "new content");
+        TaskDto outputDto = new TaskDto(1L, "Updated", "new content");
+
+        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(mappedTask);
+        when(dbService.updateTask(eq(1L), any(Task.class))).thenReturn(updatedTask);
+        when(taskMapper.mapToTaskDto(any(Task.class))).thenReturn(outputDto);
+
+        mockMvc.perform(put("/v1/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(inputDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("Updated"));
+    }
+
+    @Test
+    void shouldCreateTask() throws Exception {
+        TaskDto inputDto = new TaskDto(1L, "Task", "content");
+        Task mappedTask = new Task(1L, "Task", "content");
+
+        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(mappedTask);
+        when(dbService.saveTask(mappedTask)).thenReturn(mappedTask);
+
+        mockMvc.perform(post("/v1/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(inputDto)))
+                .andExpect(status().isCreated());
     }
 }
