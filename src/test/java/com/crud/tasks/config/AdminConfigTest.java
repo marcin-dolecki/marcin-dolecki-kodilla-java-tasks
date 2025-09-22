@@ -11,11 +11,8 @@ class AdminConfigTest {
     @Test
     void shouldReturnAdminMail() throws Exception {
         AdminConfig adminConfig = new AdminConfig();
+        adminConfig.setAdminMail("admin@admin.com");
 
-        Field field = AdminConfig.class.getDeclaredField("adminMail");
-        field.setAccessible(true);
-        field.set(adminConfig, "test@email.com");
-
-        assertThat(adminConfig.getAdminMail()).isEqualTo("test@email.com");
+        assertThat(adminConfig.getAdminMail()).isEqualTo("admin@admin.com");
     }
 }
