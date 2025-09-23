@@ -1,6 +1,8 @@
 package com.crud.tasks.controller;
 
+import com.crud.tasks.domain.CreatedTrelloCardDto;
 import com.crud.tasks.domain.TrelloBoardDto;
+import com.crud.tasks.domain.TrelloCardDto;
 import com.crud.tasks.domain.TrelloListDto;
 import com.crud.tasks.trello.facade.TrelloFacade;
 import org.hamcrest.Matchers;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringJUnitWebConfig
@@ -60,5 +63,15 @@ class TrelloControllerTestSuite {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].lists[0].id", Matchers.is("1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].lists[0].name", Matchers.is("Test list")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].lists[0].closed", Matchers.is(false)));
+    }
+
+    @Test
+    void shouldCreateTrelloCard() throws Exception {
+        //Given
+        TrelloCardDto trelloCardDto = new TrelloCardDto("Test", "Test description", "top", "1");
+        CreatedTrelloCardDto createdTrelloCardDto = new CreatedTrelloCardDto("232", "Test", "http://test.com", null);
+        when(trelloFacade.createCard(any(TrelloCardDto.class))).thenReturn(createdTrelloCardDto);
+
+        
     }
 }
