@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @SpringJUnitWebConfig
@@ -71,6 +71,46 @@ class TaskControllerTestSuite {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title", Matchers.is("test1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].content", Matchers.is("content 1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id", Matchers.is(2)));
+    }
+
+    @Test
+    void shouldFetchSingleTask() throws Exception {
+        Task task = new Task(1L, "test1", "content 1");
+        TaskDto taskDto = new TaskDto(1L, "test1", "content 1");
+        when(dbService.getTask(1L)).thenReturn(task);
+        when(taskMapper.mapToTaskDto(task)).thenReturn(taskDto);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/v1/tasks/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("test1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("content 1")));
+    }
+
+    @Test
+    void shouldDeleteTask() throws Exception {
+        Long taskId = 1L;
+
+        doNothing().when(dbService).deleteTask(taskId);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/v1/tasks/" + taskId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(204));
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenTaskToDeleteDoesNotExist() throws Exception {
+        Long taskId = 1L;
+
+        doThrow(new TaskNotFoundException()).when(dbService).deleteTask(taskId);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/v1/tasks/" + taskId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(404));
     }
 
     @Test
