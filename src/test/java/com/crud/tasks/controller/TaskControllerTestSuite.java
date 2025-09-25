@@ -17,8 +17,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @SpringJUnitWebConfig
 @WebMvcTest(TaskController.class)
@@ -69,5 +71,36 @@ class TaskControllerTestSuite {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title", Matchers.is("test1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].content", Matchers.is("content 1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id", Matchers.is(2)));
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorWhenDbFails() throws Exception {
+        when(dbService.getAllTasks()).thenThrow(new RuntimeException("Database error"));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/v1/tasks")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(500)); // 500 Internal Server Error
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenTaskDoesNotExist() throws Exception {
+        when(dbService.getTask(999L)).thenThrow(new TaskNotFoundException());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/v1/tasks/999")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(404)) // 404 Not Found
+                .andExpect(content().string("Task with given id doesn't exist"));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenInvalidTaskPosted() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/v1/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(""))
+                .andExpect(MockMvcResultMatchers.status().is(400)); // 400 Bad Request
     }
 }
