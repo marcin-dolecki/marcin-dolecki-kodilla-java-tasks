@@ -102,6 +102,50 @@ class TaskControllerTestSuite {
     }
 
     @Test
+    void shouldUpdateTask() throws Exception {
+        TaskDto taskDto = new TaskDto(1L, "Updated Task", "Updated Content");
+        Task task = new Task(1L, "Updated Task", "Updated Content");
+
+        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(task);
+        when(dbService.saveTask(any(Task.class))).thenReturn(task);
+        when(taskMapper.mapToTaskDto(any(Task.class))).thenReturn(taskDto);
+
+        String jsonContent = gson.toJson(taskDto);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/v1/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(jsonContent))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("Updated Task")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("Updated Content")));
+    }
+
+    @Test
+    void shouldCreateTask() throws Exception {
+        TaskDto taskDto = new TaskDto(1L, "New Task", "New Content");
+        Task task = new Task(1L, "New Task", "New Content");
+
+        when(taskMapper.mapToTask(any(TaskDto.class))).thenReturn(task);
+        when(dbService.saveTask(any(Task.class))).thenReturn(task);
+        when(taskMapper.mapToTaskDto(any(Task.class))).thenReturn(taskDto);
+
+        String jsonContent = gson.toJson(taskDto);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/v1/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(jsonContent))
+                .andExpect(MockMvcResultMatchers.status().is(201))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title", Matchers.is("New Task")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content", Matchers.is("New Content")));
+    }
+
+    @Test
     void shouldReturnNotFoundWhenTaskToDeleteDoesNotExist() throws Exception {
         Long taskId = 1L;
 
