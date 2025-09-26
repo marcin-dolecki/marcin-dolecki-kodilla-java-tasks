@@ -88,7 +88,7 @@ class TaskControllerTest {
         when(dbService.getTask(100L)).thenThrow(new TaskNotFoundException());
 
         mockMvc.perform(get("/v1/tasks/100"))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(content().string("Task with given id doesn't exist"));
     }
 
