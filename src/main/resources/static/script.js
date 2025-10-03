@@ -102,8 +102,9 @@ $(document).ready(function() {const apiRoot = 'https://marcin-dolecki-kodilla-ja
     }
     function handleTaskSubmitRequest(event) {
         event.preventDefault();
-        var taskTitle = $(this).find('[name="title"]').val();
-        var taskContent = $(this).find('[name="content"]').val();
+        var $form = $(this);
+        var taskTitle = $form.find('[name="title"]').val();
+        var taskContent = $form.find('[name="content"]').val();
         var requestUrl = apiRoot;
         $.ajax({
             url: requestUrl,
@@ -113,11 +114,17 @@ $(document).ready(function() {const apiRoot = 'https://marcin-dolecki-kodilla-ja
             dataType: 'json',
             data: JSON.stringify({
                 title: taskTitle,
-                content: taskContent}),
-            complete: function(data) {
-                if (data.status === 200) {
-                    getAllTasks();
-                }
+                content: taskContent
+            }),
+            success: function(newTask) {
+                availableTasks[newTask.id] = newTask;
+                var $newTaskEl = createElement(newTask);
+                getAllAvailableBoards(function(_, boards) {
+                    var $availableBoardsOptionElements = prepareBoardOrListSelectOptions(boards);
+                    $newTaskEl.find('[data-board-name-select]').append($availableBoardsOptionElements);
+                    $tasksContainer.append($newTaskEl);
+                    $form[0].reset();
+                }, null);
             }
         });
     }
