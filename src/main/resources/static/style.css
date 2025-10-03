@@ -188,3 +188,70 @@ body {
 .template {
     display: none;
 }
+
+/*!* Buttons interaction v1 *!*/
+/*.datatable__button:hover {*/
+/*    background-color: #218838;*/
+/*    cursor: pointer;*/
+/*    transform: translateY(-1px);*/
+/*    transition: all 0.15s ease-in-out;*/
+/*}*/
+/*.datatable__button:active {*/
+/*    background-color: #1e7e34;*/
+/*    transform: translateY(1px);*/
+/*    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);*/
+/*    transition: all 0.05s ease-in-out;*/
+/*}*/
+
+/* Buttons interaction v2 */
+.datatable__button {
+    color: #fff;
+    background-color: #28a745;
+    display: inline-block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 8px 14px;
+    font-size: 12px;
+    min-width: 120px;
+    line-height: 1.25;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: all 0.15s ease-in-out;
+}
+
+.datatable__button:hover {
+    background-color: #218838;
+    cursor: pointer;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.datatable__button:active {
+    background-color: #1e7e34;
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.25);
+}
+
+.datatable__button--editing {
+    background-color: #ffc107;
+    color: #212529;
+}
+.datatable__button--editing:hover {
+    background-color: #e0a800;
+}
+.datatable__button--card-creation {
+    background-color: #007bff;
+}
+.datatable__button--card-creation:hover {
+    background-color: #0069d9;
+}
+
+.datatable__button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.4);
+}
