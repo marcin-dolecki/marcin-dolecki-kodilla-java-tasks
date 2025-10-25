@@ -28,6 +28,7 @@ public class MailCreatorService {
         context.setVariable("button", "Visit website");
         context.setVariable("show_button", false);
         context.setVariable("admin_name", adminConfig.getAdminName());
+        context.setVariable("is_friend", true);
         context.setVariable("company", companyConfig);
         return templateEngine.process("mail/created-trello-card-mail", context);
     }
