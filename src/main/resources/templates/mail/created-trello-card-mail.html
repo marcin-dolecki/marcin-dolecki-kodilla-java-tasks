@@ -107,9 +107,10 @@
                                                         <tbody>
                                                         <tr>
                                                             <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;">
+                                                                <!--/*@thymesVar id="show_button" type="com/crud/tasks/service/MailCreatorService.java"*/-->
                                                                 <!--/*@thymesVar id="tasks_url" type="com/crud/tasks/service/MailCreatorService.java"*/-->
                                                                 <!--/*@thymesVar id="button" type="com/crud/tasks/service/MailCreatorService.java"*/-->
-                                                                <a th:href="${tasks_url}" th:text="${button}" target="_blank" style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;"></a>
+                                                                <a th:if="${show_button}" th:href="${tasks_url}" th:text="${button}" target="_blank" style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;"></a>
                                                             </td>
                                                         </tr>
                                                         </tbody>
