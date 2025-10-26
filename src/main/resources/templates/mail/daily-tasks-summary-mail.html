@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Daily Tasks Summary</title>
+</head>
+<body>
+<div style="font-family: Arial, sans-serif;">
+    <!--/*@thymesVar id="admin_name" type="com/crud/tasks/service/MailCreatorService.java"*/-->
+    <h1 th:text="'Hello, ' + ${admin_name} + '!'">Hello!</h1>
+
+    <!--/*@thymesVar id="message" type="com/crud/tasks/service/MailCreatorService.java"*/-->
+    <p th:text="${message}">Here is your daily summary.</p>
+
+    <p>
+        <!--/*@thymesVar id="tasks_url" type="com/crud/tasks/service/MailCreatorService.java"*/-->
+        <a th:href="${tasks_url}"
+           style="background-color:#007bff;color:white;padding:10px 15px;
+                      text-decoration:none;border-radius:5px;">
+            Go to Tasks App
+        </a>
+    </p>
+
+    <hr/>
+
+    <p>Best regards,</p>
+    <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;">
+        <!--/*@thymesVar id="company" type="com/crud/tasks/service/MailCreatorService.java"*/-->
+        <strong th:text="${company.name}"></strong><br>
+        <span th:text="${company.address}"></span><br>
+        Tel: <span th:text="${company.phone}"></span><br>
+        Email: <a th:href="'mailto:' + ${company.email}" th:text="${company.email}"></a>
+    </span>
+</div>
+</body>
+</html>
